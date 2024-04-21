@@ -1,0 +1,105 @@
+<div class="search_box">
+
+</div>
+<div class="content">
+  <div class="notice_head">
+    <div>번호</div>
+    <div>제목</div>
+    <div>작성자</div>
+    <div>작성일</div>
+    <div>조회수</div>
+  </div>
+  <div class="notice_body">
+
+  </div>
+  <div class="notice_nav">
+
+  </div>
+  <script>
+    let box = document.querySelector('.sub_textbox');
+    box.classList.remove('sub_textbox');
+    box.classList.add('sub_notice');
+
+    let link = document.createElement('link');
+    document.head.appendChild(link);
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'css/notice.css';
+
+    let qs = new URLSearchParams(location.search);
+    let page = qs.get('page') || 1;
+
+
+    (async function() {
+      let response = await fetch('/api/get_dataroom/page/' + page);
+      let rs = await response.json();
+      console.log(rs)
+
+      pushData(rs.data);
+      makePageNav(page, rs.maxPage);
+
+    })();
+
+    function pushData(data) {
+      let noticeBox = document.querySelector('.notice_body');
+      data.forEach(p => {
+        let rap = document.createElement('div');
+        let a = document.createElement('a');
+        let num = document.createElement('div');
+        let title = document.createElement('div');
+        let writer = document.createElement('div');
+        let date = document.createElement('div');
+        let clicked = document.createElement('div');
+        rap.appendChild(num);
+        rap.appendChild(title);
+        rap.appendChild(writer);
+        rap.appendChild(date);
+        rap.appendChild(clicked);
+        title.appendChild(a);
+        noticeBox.appendChild(rap);
+
+        a.href = '/data_view?id=' + p.id + '&board=dataroom&page=' + page;
+
+        num.innerText = p.id/1+1;
+        a.innerText = p.title;
+        writer.innerText = '관리자';
+        date.innerText = p.date.substring(2);
+        clicked.innerText = p.clicked;
+      })
+    }
+
+
+    function makePageNav(page, maxPage) {
+      let pageStart = Math.floor((page - 1) / 10) * 10 + 1;
+      let pageEnd = maxPage <= (pageStart + 9) ? maxPage : (pageStart + 9);
+      let pageNav = document.querySelector('.notice_nav');
+      let navBox = document.createElement('div');
+      pageNav.appendChild(navBox);
+      for (let i = pageStart; i <= pageEnd; i++) {
+        let nav = document.createElement('a');
+        navBox.appendChild(nav);
+        nav.classList.add('page_nav')
+        nav.innerText = i;
+        if (i == page) {
+          nav.classList.add('active');
+        }
+        nav.href = '/dataroom?page=' + i;
+      }
+      if (pageStart > 1) {
+        let left = document.createElement('a');
+        navBox.appendChild(left);
+        left.classList.add('page_nav_left')
+        left.innerText = "<<";
+        left.href = '/dataroom?page=' + (pageStart - 1);
+      }
+      if (pageEnd < maxPage) {
+        let right = document.createElement('a');
+        navBox.appendChild(right);
+        right.classList.add('page_nav_right')
+        right.innerText = ">>";
+        right.href = '/dataroom?page=' + (pageEnd + 1);
+      }
+    }
+
+  </script>
+</div>

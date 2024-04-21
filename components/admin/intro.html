@@ -1,0 +1,74 @@
+
+<div>
+  <div id="c_box">
+    
+  </div>
+  <div class="btn_box">
+    <button id="c_img">이미지수정</button>
+    <button id="save">저장하기</button>
+  </div>
+</div>
+<script>
+  (function () {
+    let target = 'intro';
+    let c_img = document.getElementById('c_img');
+    let save = document.getElementById('save');
+
+    // save.style.display = 'none';
+    c_img.style.display = 'none';
+
+    let option = {
+      method: "POST",
+      headers: { "Authorization": 'Bearer ' + token, "Content-Type": "application/json" },
+    }
+
+    save.addEventListener('click', (e) => {
+      let div = document.querySelector('#c_box').cloneNode(true);
+      div.querySelector('.content').removeAttribute('contentEditable')
+      let body = {};
+      body.data = div.querySelector('.sub_textbox').innerHTML;
+      option.body = JSON.stringify(body);
+      console.log(option)
+      fetch('/api/save/text/' + target, option).then(res => {
+        if (res.status == 200) {
+          alert('저장완료');
+        }
+      })
+    })
+  })()
+</script>
+<script>
+    (function () {
+      let target = 'intro';
+      let contentEditable = true;
+
+      let option = {
+        method: "GET",
+        headers: { "Authorization": 'Bearer ' + token },
+      }
+
+      let link = document.createElement('link');
+      document.querySelector('.content').appendChild(link);
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/contents.css';
+
+      fetch('/' + target, option).then(res => {
+        if (res.status == 200) {
+          return res.text();
+        } else {
+          alert('다시 로그인해주세요');
+          location.href = '/';
+        }
+      }).then(res => {
+        let tmp = document.createElement('div');
+        tmp.innerHTML = res;
+        let div = document.getElementById('c_box');
+        div.innerHTML = tmp.querySelector('.sub_textbox').outerHTML;
+        if (contentEditable) {
+          div.querySelector('.content').contentEditable = "true";
+        }
+      })
+
+    })()
+</script>

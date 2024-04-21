@@ -1,0 +1,46 @@
+<div class="hr_1"></div>
+<div class="content">
+  <div id="status_show">
+    <img src="" alt="">
+    <div></div>
+  </div>
+  <div id="status_item"></div>
+  <script>
+    const showBox = document.querySelector('#status_show');
+    const itemBox = document.querySelector('#status_item');
+    let k = 0;
+    status_show.querySelector('img').onload = (e) => {
+      showBox.style.height = status_show.querySelector('img').height+'px';
+    }
+    (async function () {
+      let response = await fetch('/api/get_photo_gall');
+      let data = await response.json();
+      for (let i in data) {
+        if (typeof data[i] == "object") {
+          for (let j in data[i]) {
+            addImgBox(i,data[i][j]);
+          }
+        } else {
+          addImgBox(i,data[i]);
+        }
+      }
+    })();
+    function addImgBox(name,src) {
+      const img = document.createElement('img');
+      itemBox.appendChild(img);
+      img.className = name;
+      img.src = 'image/Spac/'+src;
+      img.onclick = () => {
+        showBox.querySelector('img').src='image/Spac/'+src;
+        showBox.querySelector('div').innerText = name;
+        showBox.style.height = showBox.querySelector('img').clientHeight + 'px';
+      }
+      if (k==0) {
+        img.click();
+        k++;
+      }
+    }
+
+    
+  </script>
+</div>

@@ -1,0 +1,98 @@
+<div class="hr_1"></div>
+<div class="content">
+  <div class="act_gall_gridbox">
+
+  </div>
+  <div class="act_gall_page_navbox">
+
+  </div>
+  <script>
+    let box = document.querySelector('.sub_textbox');
+    box.classList.remove('sub_textbox');
+    box.classList.add('sub_gallbox');
+
+    let link = document.createElement('link');
+    document.head.appendChild(link);
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'css/gall.css';
+
+    let qs = new URLSearchParams(location.search);
+    let page = qs.get('page') || 1;
+
+
+    (async function() {
+      let response = await fetch('/api/get_act_gall/page/' + page);
+      let rs = await response.json();
+      console.log(rs)
+      makePageNav(page, rs.maxPage)
+      pushData(rs.data)
+
+
+
+
+
+
+
+    })();
+
+    function pushData(data) {
+      let gridBox = document.querySelector('.act_gall_gridbox');
+      data.forEach(p => {
+        let a = document.createElement('a');
+        let img = document.createElement('img');
+        let contents = document.createElement('div');
+        gridBox.appendChild(a);
+        a.appendChild(img);
+        a.appendChild(contents);
+
+        a.classList.add('gall_item');
+        a.href = '/act_gall_view?id=' + p.id + '&board=act_gall&page=' + page
+
+        img.src = '/image/upload/'+p.body.filter(q=>q.type=='img')[0].data;
+
+        contents.innerHTML = `
+        <div class='item_title_box'>
+          <span class='item_title'>${p.title}</span>
+          <span class='item_writer'>관리자</span>
+          <span class='item_date'>${p.date}</span>
+        </div>
+        `;
+      })
+    }
+
+
+    function makePageNav(page, maxPage) {
+      let pageStart = Math.floor((page - 1) / 10) * 10 + 1;
+      let pageEnd = maxPage <= (pageStart + 9) ? maxPage : (pageStart + 9);
+      let pageNav = document.querySelector('.act_gall_page_navbox');
+      let navBox = document.createElement('div');
+      pageNav.appendChild(navBox);
+      for (let i = pageStart; i <= pageEnd; i++) {
+        let nav = document.createElement('a');
+        navBox.appendChild(nav);
+        nav.classList.add('page_nav')
+        nav.innerText = i;
+        if (i == page) {
+          nav.classList.add('active');
+        }
+        nav.href = '/act_gall?page=' + i;
+      }
+      if (pageStart > 1) {
+        let left = document.createElement('a');
+        navBox.appendChild(left);
+        left.classList.add('page_nav_left')
+        left.innerText = "<<";
+        left.href = '/act_gall?page=' + (pageStart - 1);
+      }
+      if (pageEnd < maxPage) {
+        let right = document.createElement('a');
+        navBox.appendChild(right);
+        right.classList.add('page_nav_right')
+        right.innerText = ">>";
+        right.href = '/act_gall?page=' + (pageEnd + 1);
+      }
+    }
+
+  </script>
+</div>

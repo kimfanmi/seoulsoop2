@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/admin.css">
+  <title>서울숲요양원</title>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="left_menu">
+    </div>
+    <div class="content_box">
+      <div class="top_menu">
+        <div class="title">서울숲요양원</div>
+        <div class="logoutBtn">로그아웃</div>
+      </div>
+      <div class="content">
+
+      </div>
+    </div>
+  </div>
+  <script>
+    document.querySelector('.logoutBtn').onclick = () => {
+      localStorage.removeItem('token');
+      location.href = '/';
+    }
+    let token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인해주세요');
+      location.href = '/';
+    }
+    let option = {
+      method: "GET",
+      headers: { "Authorization": 'Bearer ' + token },
+    }
+    fetch('/api/admin/left_menu', option).then(res => {
+      if (res.status == 200) {
+        return res.text();
+      } else {
+        alert('로그인해주세요');
+        location.href = '/';
+      }
+    }).then(res => {
+      document.querySelector('.left_menu').innerHTML = res
+      let scr = document.querySelector('.left_menu').querySelectorAll('script');
+      scr.forEach(p => {
+        let s = document.createElement('script');
+        s.innerHTML = p.innerHTML;
+        document.querySelector('.left_menu').appendChild(s);
+        p.remove();
+      });
+    })
+  </script>
+</body>
+
+</html>

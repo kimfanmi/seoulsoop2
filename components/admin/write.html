@@ -1,0 +1,249 @@
+<div>
+  <div>
+    <div>제목<input type="text" id="title"></div>
+  </div>
+  <div>내용</div>
+  <div id="data_box">
+
+  </div>
+  <div>
+    <input type="button" value="사진추가" id="add_img">
+    <input type="button" value="텍스트추가" id="add_text">
+  </div>
+  <div>
+    <input type="button" value="저장하기" id="save_data">
+  </div>
+
+</div>
+
+<script>
+  (async function () {
+
+    let link = document.createElement('link');
+    document.querySelector('.content').appendChild(link);
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'css/admin_write.css';
+
+
+    let qs = new URLSearchParams(location.search);
+    let id = qs.get('id');
+    let target = qs.get('target');
+
+    let add_img = document.getElementById('add_img');
+    let add_text = document.getElementById('add_text');
+    let data_box = document.getElementById('data_box');
+    let save_data = document.getElementById('save_data');
+    let title = document.getElementById('title');
+
+    let file_ary = [];
+
+    save_data.onclick = () => {
+      let body = [];
+      document.querySelectorAll('div[contenteditable=true],input[type=file]').forEach(p => body.push(p));
+      let i = 0;
+      body = body.map(p => {
+        if (p.nodeName == 'DIV') {
+          return { type: 'text', data: p.innerText };
+        } else if (p.nodeName == 'INPUT') {
+          return { type: 'img', data: file_ary[i++] };
+        }
+      })
+      let data = {};
+      data.body = body;
+      data.title = title.value;
+      let now = new Date();
+      data.date = `${now.getFullYear()}-${(now.getMonth() / 1 + 1 + "").padStart(2, "0")}-${now.getDate()}`;
+      console.log(data);
+      console.log('---------------')
+      let imgformdata = [];
+      data.body = data.body.map((p, i) => {
+        if (typeof p.data == 'object') {
+          imgformdata.push(new File([p.data], i + '_' + p.data.name, { type: p.data.type }));
+          return { ...p, data: i + '_' + p.data.name };
+        } else {
+          return p;
+        }
+      })
+
+      console.log(imgformdata);
+      console.log(data);
+
+      let option = {
+        method: "POST",
+        headers: { "Authorization": 'Bearer ' + token, "charset": "UTF-8" },
+      }
+      let formData = new FormData();
+      imgformdata.forEach(p => {
+        formData.append('images', p)
+      })
+      formData.append('json', JSON.stringify(data));
+      option.body = formData;
+      fetch(`/api/save/board/${target}/${id || 'new'}`, option).then(res => {
+        if (res.status == 200) {
+          alert('저장완료');
+          location.href = `/admin?page=${target}`;
+        }
+      })
+    }
+
+
+
+    if (id != null) {
+      const convertURLtoFile = async (url, ary, input) => {
+        const response = await fetch(url);
+        const data = await response.blob();
+        const ext = url.split(".").pop(); // url 구조에 맞게 수정할 것
+        const filename = url.split("/").pop(); // url 구조에 맞게 수정할 것
+        const metadata = { type: `image/${ext}` };
+        ary.push(new File([data], filename, metadata));
+        input.dataset.filename = filename;
+        return;
+      };
+
+      await (async function () {
+        let response = await fetch('/api/get/' + target + '/item/' + id);
+        let rs = await response.json();
+        title.value = rs.title;
+        rs.body.forEach(p => {
+          if (p.type == 'text') {
+            let input = document.createElement('div');
+            input.innerText = p.data
+            data_box.appendChild(input);
+            input.contentEditable = "true";
+          } else if (p.type == 'img') {
+            let img = document.createElement('img');
+            let input = document.createElement('input');
+            let fixbtn = document.createElement('input');
+            let delbtn = document.createElement('input');
+            img.src = 'image/upload/' + p.data;
+            img.onclick = () => {
+              if (fixbtn.style.display == 'none') {
+                fixbtn.style.display = 'inline';
+                delbtn.style.display = 'inline';
+              } else {
+                fixbtn.style.display = 'none';
+                delbtn.style.display = 'none';
+              }
+            }
+            fixbtn.type = 'button';
+            fixbtn.value = '이미지수정';
+            let tmp;
+            fixbtn.onclick = (e) => {
+              let ft = [];
+              document.querySelectorAll('input[type=file]').forEach(p => ft.push(p));
+              ft = ft.map(p => p.dataset.filename);
+              file_ary = ft.map(p => file_ary.find(q => q.name == p));
+              ft = '';
+              tmp = input.dataset.filename;
+              input.click();
+              fixbtn.style.display = 'none';
+              delbtn.style.display = 'none';
+            }
+            fixbtn.style.display = 'none';
+            fixbtn.style.transform = 'translate(10% , -145%)';
+            delbtn.type = 'button';
+            delbtn.value = '이미지삭제';
+            delbtn.onclick = () => {
+              img.remove();
+              input.remove();
+              fixbtn.remove();
+              delbtn.remove();
+            }
+            delbtn.style.display = 'none';
+            delbtn.style.transform = 'translate(-101% , -15%)';
+            input.type = 'file';
+            convertURLtoFile(img.src, file_ary, input);
+            input.style.display = 'none';
+            input.onchange = (e) => {
+              let url = URL.createObjectURL(input.files[0]);
+              let index = file_ary.indexOf(file_ary.find(p => p.name == tmp));
+              let file = new File([input.files[0]], (index > -1 ? index : file_ary.length) + '_' + input.files[0].name, { type: input.files[0].type });
+              input.dataset.filename = file.name;
+              if (index >= 0) {
+                file_ary.splice(index, 1, file);
+              } else {
+                file_ary.push(file);
+              }
+              img.src = url;
+            }
+            data_box.appendChild(img);
+            data_box.appendChild(input);
+            data_box.appendChild(fixbtn);
+            data_box.appendChild(delbtn);
+            data_box.appendChild(document.createElement('br'));
+          }
+        })
+      })()
+    }
+
+
+
+    add_img.onclick = () => {
+      let img = document.createElement('img');
+      let input = document.createElement('input');
+      let fixbtn = document.createElement('input');
+      let delbtn = document.createElement('input');
+      img.onclick = () => {
+        if (fixbtn.style.display == 'none') {
+          fixbtn.style.display = 'inline';
+          delbtn.style.display = 'inline';
+        } else {
+          fixbtn.style.display = 'none';
+          delbtn.style.display = 'none';
+        }
+      }
+      fixbtn.type = 'button';
+      fixbtn.value = '이미지수정';
+      let tmp;
+      fixbtn.onclick = (e) => {
+        tmp = input.dataset.filename;
+        input.click();
+        fixbtn.style.display = 'none';
+        delbtn.style.display = 'none';
+      }
+      fixbtn.style.display = 'none';
+      fixbtn.style.transform = 'translate(10% , -145%)';
+      delbtn.type = 'button';
+      delbtn.value = '이미지삭제';
+      delbtn.onclick = () => {
+        img.remove();
+        input.remove();
+        fixbtn.remove();
+        delbtn.remove();
+      }
+      delbtn.style.display = 'none';
+      delbtn.style.transform = 'translate(-90% , -15%)';
+      input.type = 'file';
+      input.style.display = 'none';
+      input.onchange = () => {
+        let url = URL.createObjectURL(input.files[0]);
+        let index = file_ary.indexOf(file_ary.find(p => p.name == tmp));
+        let file = new File([input.files[0]], file_ary.length + '_' + input.files[0].name, { type: input.files[0].type });
+        input.dataset.filename = file.name;
+        if (index >= 0) {
+          file_ary.splice(index, 1, file);
+        } else {
+          file_ary.push(file);
+        }
+        img.src = url;
+        if (data_box.hasChildNodes(delbtn)) {
+          data_box.appendChild(img);
+          data_box.appendChild(input);
+          data_box.appendChild(fixbtn);
+          data_box.appendChild(delbtn);
+          data_box.appendChild(document.createElement('br'));
+        }
+      }
+      input.click();
+    };
+    add_text.onclick = () => {
+      let input = document.createElement('div');
+      data_box.appendChild(input);
+      input.contentEditable = "true";
+      input.tabindex = "0"
+      input.focus();
+    }
+
+  })()
+</script>

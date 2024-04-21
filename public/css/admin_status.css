@@ -1,0 +1,42 @@
+
+#c_box {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+}
+
+#c_box > div {
+  display: grid;
+  grid-template-columns: 3fr 2fr 5fr 1fr;
+  align-items: center;
+  align-self: center;
+  border-bottom: 1px solid #aaa;
+}
+
+#c_box > div > * {
+  display: block;
+}
+
+.file_input {
+  display: none !important;
+}
+
+#c_box {
+  width: 100% !important;
+}
+
+#c_box > div > input:first-child {
+  width: 80%;
+  height: 23px;
+}
+.file_btn {
+  width: 60%;
+}
+#save,
+#add_img {
+  margin: 30px;
+  padding: 5px 10px;
+}
+#add_img {
+  margin-left: 250px;
+}

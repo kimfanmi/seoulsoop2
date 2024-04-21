@@ -1,0 +1,125 @@
+.viewer_info1 {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  grid-template-rows: repeat(2,1fr);
+  border-top: 1px solid #8f8f8f;
+  background-color: #f4f4f4;
+  height: 91px;
+  padding: 17px 24px;
+  row-gap: 15px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #434343;
+}
+.viewer_info1 > div {
+  position: relative;
+}
+.viewer_info1 > div > span {
+  display: inline-block;
+  position: absolute;
+  left: 120px;
+  font-weight: 500;
+  color: #686868;
+}
+.viewer_title {
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+.viewer_writer {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  align-self: self-end;
+}
+.viewer_date {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  align-self: self-end;
+}
+
+.viewer_info2 {
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  border-bottom: 1px solid #efefef;
+  height: 40px;
+  padding: 10px 24px;
+  margin-bottom: 15px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #333;
+}
+.viewer_info2 > div {
+  position: relative;
+}
+.viewer_info2 > div > span {
+  display: inline-block;
+  position: absolute;
+  left: 60px;
+  font-size: 13px;
+  font-weight: normal;
+}
+.viewer_clicked {
+  grid-column-start: 5;
+  grid-column-end: 6;
+}
+
+.viewer_btnBox > button {
+  padding: 10px 20px;
+  background-color: #5a80b9;
+  color: #fff;
+  border-radius: 5px;
+  border: none;
+  margin: 30px;
+}
+
+.viewer_content {
+  min-height: 300px;
+}
+
+.viewer_info2 a {
+  color: #333;
+  text-decoration: none;
+}
+
+.download_icon {
+  display: inline-block;
+  width: 10px;
+  height: 80%;
+  border: 1px solid black;
+  margin: 0 5px;
+  position: relative;
+}
+.download_icon::before {
+  content: '';
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  position: absolute;
+  z-index: 10;
+  top: 2px;
+  right: 2px;
+  background-color: #fff;
+}
+
+.viewer_info1 {
+  width: 100% !important;
+}
+
+.content > div {
+  background-color: #fff;
+}
+
+.viewer_content {
+  padding: 25px;
+}
+
+.viewer_info1 {
+  border-bottom: 1px solid black;
+}
+
+.content {
+  width: 650px !important;
+}
+
+.viewer_btnBox {
+  text-align: right;
+}

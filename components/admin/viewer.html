@@ -1,0 +1,54 @@
+<div class="viewer_info1">
+  <div class="viewer_title">제목<span></span></div>
+  <div class="viewer_writer">작성자<span></span></div>
+  <div class="viewer_date">작성일<span></span></div>
+</div>
+<div class="viewer_content">
+
+</div>
+<div class="viewer_btnBox">
+  <button>목록</button>
+</div>
+<script>
+  let box = document.querySelector('.content');
+
+  let link = document.createElement('link');
+  box.appendChild(link);
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = 'css/admin_viewer.css';
+
+  let params = new URLSearchParams(location.search)
+  let id = params.get('id') / 1;
+  let target = params.get('target');
+
+  (async function () {
+    let response = await fetch(`/api/get/${target}/item/${id}`);
+    let rs = await response.json();
+    console.log(rs)
+    viewer({ ...rs })
+  })();
+
+  function viewer(data) {
+    let { title, name, clicked, date, body } = data;
+
+    document.querySelector('.viewer_info1 > .viewer_title > span').textContent = title;
+    document.querySelector('.viewer_info1 > .viewer_writer > span').textContent = name;
+    document.querySelector('.viewer_info1 > .viewer_date > span').textContent = date;
+
+    let content = document.querySelector('.viewer_content');
+
+    let div = document.createElement('div');
+    div.innerText = body;
+    content.appendChild(div);
+
+    document.querySelector('.viewer_btnBox > button').addEventListener('click', () => {
+        location.href = `/admin?page=${target}`;
+    })
+
+
+
+  }
+
+
+</script>

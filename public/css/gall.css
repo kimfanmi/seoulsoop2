@@ -1,0 +1,111 @@
+.act_gall_gridbox {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  grid-template-rows: repeat(5,1fr);
+  column-gap: 14px;
+  row-gap: 40px;
+}
+
+
+.act_gall_gridbox > a {
+  display: block;
+  width: 100%;
+  height: 170px;
+  position: relative;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.act_gall_gridbox > a > img {
+  width: 100%;
+  height: 100%;
+}
+.act_gall_gridbox > a > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: #fb6e61 solid 5px;
+  opacity: 0;
+  transition: 0.2s  ease-in-out;
+}
+
+.act_gall_gridbox > a:hover > div,
+.act_gall_gridbox > a:hover > div > div {
+  opacity: 1;
+  bottom: 0;
+}
+
+.act_gall_gridbox > a > div > div {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  bottom: -70px;
+  transition: 0.2s  ease-in-out;
+}
+.act_gall_gridbox > a > div > div > * {
+  display: block;
+  padding-left: 20px;
+}
+.act_gall_gridbox .item_title {
+  color: #fb6e61;
+  font-size: 15px;
+  padding-top: 10px;
+}
+.act_gall_gridbox .item_writer {
+  color: #fff;
+  font-size: 12px;
+  padding-top: 10px;
+}
+.act_gall_gridbox .item_date {
+  color: #bbb;
+  font-size: 10px;
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+.act_gall_page_navbox {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+}
+.act_gall_page_navbox > div {
+  width: fit-content;
+  margin: 0 auto;
+  position: relative;
+}
+.act_gall_page_navbox a.page_nav {
+  border: 1px solid #808080;
+  background-color: #fff;
+  color: #808080;
+  font-size: 12px;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  width: 24px;
+  padding: 4px 0;
+}
+.act_gall_page_navbox a.active {
+  color: #fff;
+  background-color: #808080;
+}
+a.page_nav ~ a.page_nav {
+  margin-left: 4px;
+}
+
+.page_nav_left,
+.page_nav_right {
+  position: absolute;
+  text-decoration: none;
+  color: #808080;
+}
+.page_nav_left {
+  right: 102%;
+}
+.page_nav_right {
+  left: 102%;
+}

@@ -1,0 +1,91 @@
+<ul id="menu_list" onload="muneList">
+</ul>
+<script>
+  (function () {
+    // let link = document.createElement('link');
+    // document.head.appendChild(link);
+    // link.rel = 'stylesheet';
+    // link.type = 'text/css';
+    // link.href = 'css/admin_left.css';
+    const lists = [
+      ['dashboard', '대시보드'],
+      ['base', '기본정보'],
+      ['footlink','메인하단'],
+      ['intro', '인사말'],
+      ['jojigdo', '조직도'],
+      ['status', '시설현황'],
+      ['info', '입소비용'],
+      ['info2', '입소안내'],
+      ['service', '서울숲케어서비스'],
+      ['gall', '시설갤러리'],
+      ['photo_gall', '숲갤러리'],
+      ['act_gall', '행사/활동갤러리'],
+      ['notice', '공지사항'],
+      // ['dataroom', '자료실'],
+      ['custom', '입소문의'],
+      ['volunteer', '자원봉사문의'],
+      ['map', '오시는길'],
+    ];
+    let option = {
+      method: "GET",
+      headers: { "Authorization": 'Bearer ' + token },
+    }
+    const menu_list = document.getElementById('menu_list');
+    lists.forEach(p => {
+      let li = document.createElement('li');
+      li.classList.add(p[0]);
+      menu_list.appendChild(li);
+      let text_div = document.createElement('div');
+      li.appendChild(text_div);
+      text_div.innerText = p[1];
+      li.onclick = (e) => {
+        fetch('/api/admin/' + p[0], option).then(res => {
+          history.pushState(null, null, `/admin?page=${p[0]}`)
+          if (res.status == 200) {
+            return res.text();
+          } else {
+            alert('로그인해주세요');
+            location.href = '/';
+          }
+        }).then(res => {
+          let div = document.querySelector('.content');
+          div.innerHTML = '';
+          div.innerHTML = res;
+          let scr = div.querySelectorAll('script');
+          scr.forEach(q => {
+            let s = document.createElement('script');
+            s.innerHTML = q.innerHTML;
+            div.appendChild(s);
+            q.remove();
+          });
+        })
+      }
+    })
+    let qs = new URLSearchParams(location.search);
+    let page = qs.get('page') || 'dashboard';
+    if (page == 'write' || page == 'viewer') {
+      fetch('/api/admin/'+page, option).then(res => {
+        if (res.status == 200) {
+          return res.text();
+        } else {
+          alert('로그인해주세요');
+          location.href = '/';
+        }
+      }).then(res => {
+        let div = document.querySelector('.content');
+        div.innerHTML = '';
+        div.innerHTML = res;
+        let scr = div.querySelectorAll('script');
+        scr.forEach(q => {
+          let s = document.createElement('script');
+          s.innerHTML = q.innerHTML;
+          div.appendChild(s);
+          q.remove();
+        });
+      })
+    } else {
+      document.querySelector('#menu_list > .' + page).click();
+    }
+  })()
+
+</script>

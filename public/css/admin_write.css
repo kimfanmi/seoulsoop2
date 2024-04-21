@@ -1,0 +1,35 @@
+.content img {
+  width: 75%;
+}
+
+.content>div>div:first-child>div {
+  padding: 10px 0;
+}
+
+.content>div>div:nth-child(2) {
+  padding: 10px 0 20px;
+}
+
+.content>div>div:nth-child(4) {
+  text-align: left;
+}
+
+.content>div>div:nth-child(5) {
+  text-align: center;
+}
+
+#title {
+  margin-left: 30px;
+  padding: 3px;
+  width: 50%;
+}
+
+.content>div {
+  padding: 10px;
+  width: 90% !important;
+}
+
+input[type=button] {
+  padding: 5px 10px;
+  margin: 5px;
+}

@@ -1,0 +1,11 @@
+.vsm-marker::after {
+  content: '서울숲요양원';
+  position: absolute;
+  top: 103%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  font-size: 16px;
+  padding: 1px 4px;
+  background-color: rgba(47, 96, 255, 0.2);
+}

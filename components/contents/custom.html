@@ -1,0 +1,73 @@
+<div class="hr_1"></div>
+<div class="content">
+  <h1>
+    입소문의
+  </h1>
+  <p>
+    입소를 문의 하시려면 아래 문서양식에 내용을 작성하여 전송하여 주십시오.
+  </p>
+
+  <form id="v_form" action="" method="post">
+    <label for="v_name">
+      <div>이름</div>
+    </label>
+    <div><input type="text" name="v_name" id="v_name" size="12" maxlength="90"></div>
+    <label>
+      <div>연락처</div>
+    </label>
+    <div><input type="text" name="v_phone" id="v_phone" size="15" maxlength="90"></div>
+    <label>
+      <div>제목</div>
+    </label>
+    <div><input type="text" name="v_title" id="v_title" size="40" maxlength="70"></div>
+    <label>
+      <div>내용</div>
+    </label>
+    <div><textarea name="v_body" id="v_body" cols="70" rows="4"></textarea></div>
+    <label>
+      <div>메일</div>
+    </label>
+    <div><input type="email" name="v_mail" id="v_mail" size="50" maxlength="90"></div>
+    <div><input id="v_submit" type="reset" value="확인"></div>
+  </form>
+
+
+  <script>
+    let box = document.querySelector('.sub_textbox');
+    box.style.padding = 0;
+
+    let link = document.createElement('link');
+    document.head.appendChild(link);
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'css/custom.css';
+
+    let button = document.querySelector('#v_submit');
+    button.addEventListener('click', (e) => {
+
+      let body = {};
+
+      body.name = document.getElementById('v_name').value;
+      body.phone = document.getElementById('v_phone').value;
+      body.title = document.getElementById('v_title').value;
+      body.body = document.getElementById('v_body').value;
+      body.mail = document.getElementById('v_mail').value;
+
+      (async function () {
+        console.log(body)
+        let response = await fetch('/api/create_custom', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        let rs = await response.json();
+        if (rs.rs == 'ok') {
+          alert('전송완료')
+        } else {
+          alert('전송실패')
+          e.preventDefault();
+        }
+      })();
+    })
+  </script>
+</div>

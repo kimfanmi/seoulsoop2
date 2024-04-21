@@ -1,0 +1,98 @@
+<div id="dash_board">
+
+</div>
+<script>
+  (function () {
+    let grid = document.getElementById('dash_board');
+    (async function () {
+      await fetch('/api/admin/dashboard_data', option).then(res => {
+        if (res.status == 200) {
+          return res.json();
+        } else {
+          alert('다시 로그인해주세요');
+          location.href = '/';
+        }
+      }).then(res => {
+        Object.keys(res).forEach(p => {
+          let main_div = document.createElement('div');
+          grid.appendChild(main_div);
+          main_div.id = p;
+
+          let title_div = document.createElement('div');
+          main_div.appendChild(title_div);
+          title_div.innerHTML = `
+        <div></div>
+        <div>
+          <div class="write_btn">글쓰기</div>  
+          <div class="short_cut">바로가기</div>
+        </div>
+      `;
+          title_div.classList.add('box_title')
+
+          title_div.querySelector('.write_btn').onclick = () => {
+            location.href = '/admin?page=write&target=' + p;
+          }
+          title_div.querySelector('.short_cut').onclick = () => {
+            location.href = '/admin?page=' + p;
+          }
+
+          let class_div = document.createElement('div');
+          main_div.appendChild(class_div);
+          class_div.innerHTML = `
+      <div>
+            글번호
+          </div>
+          <div>
+            제목
+          </div>
+          <div>
+            날자
+          </div>
+          <div>
+            글쓴이
+          </div>
+          <div>
+            기타
+          </div>  
+      `;
+          class_div.classList.add('box_class');
+          res[p].slice(0,7).forEach(q => {
+            let div = document.createElement('div');
+            main_div.appendChild(div);
+            div.classList.add('item')
+            div.innerHTML = `
+          <div class="d_num">
+            ${q.id / 1 + 1}
+          </div>
+          <div class="d_title">
+            ${q.title}
+          </div>
+          <div class="d_date">
+            ${q.date}
+          </div>
+          <div class="d_writer">
+            ${q.name || '관리자'}
+          </div>
+          <div class="new">
+            ${(q.checked == undefined || q.checked=='true')?`&nbsp;`:`New!`}
+          </div>
+          `;
+          })
+        })
+      })
+      document.querySelector('#notice > .box_title > div:first-child').innerText = '공지사항';
+      document.querySelector('#act_gall > .box_title > div:first-child').innerText = '활동갤러리';
+      document.querySelector('#custom > .box_title > div:first-child').innerText = '입소문의';
+      document.querySelector('#volunteer > .box_title > div:first-child').innerText = '봉사문의';
+      document.querySelectorAll('#custom .write_btn').forEach(p => p.style.display = 'none')
+      document.querySelectorAll('#volunteer .write_btn').forEach(p => p.style.display = 'none')
+
+
+
+
+
+    })()
+  })()
+
+
+</script>

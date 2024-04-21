@@ -1,0 +1,168 @@
+<div>
+  <div id="c_box">
+    <div id="tmp">
+      <input class="text_input" type="text">
+      <input class="file_btn" type="button" value="이미지수정">
+      <input class="file_input" type="file" accept="image/*">
+      <img src="" alt="" width="300px" height="200px">
+      <input class="x_btn" type="button" value="삭제">
+    </div>
+  </div>
+  <input type="button" value="이미지추가하기" id="add_img">
+  <input type="button" value="저장하기" id="save">
+</div>
+<script>
+  (function () {
+    let target = 'gall';
+    let id = document.getElementById('save');
+    let c_box = document.getElementById('c_box');
+    id.onclick = () => {
+      let data = { data: {}, images: [] };
+      for (let i = 0; i < c_box.children.length; i++) {
+        let titlebox = c_box.children[i].querySelector('input[type=text]');
+        let title = titlebox.value;
+        if (!title) {
+          titlebox.focus();
+          alert('이름을 입력해주세요!')
+          return false;
+        }
+        if (title.includes('$')) {
+          titlebox.focus();
+          alert('이름에 $ 를 넣으면 안됩니다!')
+          return false;
+        }
+        let pa = '';
+        if (!data.data[title]) {
+          data.data[title] = [];
+        }
+        let qsa = c_box.querySelectorAll('input[class="' + title + '"]');
+        if (qsa.length > 0) {
+          qsa.forEach((p, k) => {
+            if (p == titlebox) {
+              pa += '$' + k;
+            }
+          })
+        }
+        let file = c_box.children[i].querySelector('input[type=file]').files[0];
+        if (file) {
+          const newFile = new File([file], title + pa + '.' + file.name.split('.')[1], { type: file.type });
+          data.data[title].push(newFile.name);
+          data.images.push(newFile);
+        } else {
+          let src = c_box.children[i].querySelector('img').src;
+          data.data[title].push(src.split('Spac/')[1]);
+        }
+      }
+
+      let option = {
+        method: "POST",
+        headers: { "Authorization": 'Bearer ' + token, "charset": "UTF-8" },
+      }
+      let formData = new FormData();
+      data.images.forEach(p => {
+        formData.append('images', p)
+      })
+      formData.append('json', JSON.stringify(data.data));
+      // data.title.join(',')
+      option.body = formData;
+      fetch('/api/save/gall/' + target, option).then(res => {
+        if (res.status == 200) {
+          alert('저장완료');
+        }
+      })
+    }
+  })()
+</script>
+<script>
+    (async function () {
+      let target = 'gall';
+      let contentEditable = false;
+      let c_box = document.getElementById('c_box');
+
+      let option = {
+        method: "GET",
+        headers: { "Authorization": 'Bearer ' + token },
+      }
+
+      let link = document.createElement('link');
+      document.querySelector('.content').appendChild(link);
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/admin_status.css';
+
+      let data = [];
+      await fetch('/json/' + target, option).then(res => {
+        if (res.status == 200) {
+          return res.json();
+        } else {
+          alert('다시 로그인해주세요');
+          location.href = '/';
+        }
+      }).then(res => {
+        data = res;
+      })
+      console.log(data)
+      const tmp = document.getElementById('tmp');
+      Object.keys(data).forEach(p => {
+        data[p].forEach(q => {
+          let div = tmp.cloneNode(true);
+          div.removeAttribute('id');
+          let text = div.querySelector('.text_input');
+          text.value = p;
+          text.className = p;
+          text.onchange = () => {
+            text.className = text.value;
+          };
+          c_box.appendChild(div);
+
+          let img = div.querySelector('img');
+          img.src = 'image/Spac/' + q;
+          let btn = div.querySelector('.file_btn');
+          let xbtn = div.querySelector('.x_btn');
+          let file = div.querySelector('.file_input');
+          btn.onclick = () => {
+            file.click();
+          }
+          xbtn.onclick = () => {
+            div.remove();
+          }
+
+          file.onchange = () => {
+            let url = URL.createObjectURL(file.files[0]);
+            img.src = url
+          }
+
+        })
+      })
+      tmp.remove();
+
+      document.getElementById('add_img').onclick = () => {
+        let div = tmp.cloneNode(true);
+        div.removeAttribute('id');
+        let text = div.querySelector('.text_input');
+        text.value = '';
+        text.className = '';
+        text.onchange = () => {
+          text.className = text.value;
+        };
+        c_box.appendChild(div);
+
+        let img = div.querySelector('img');
+        let btn = div.querySelector('.file_btn');
+        let xbtn = div.querySelector('.x_btn');
+        let file = div.querySelector('.file_input');
+        btn.onclick = () => {
+          file.click();
+        }
+        xbtn.onclick = () => {
+          div.remove();
+        }
+
+        file.onchange = () => {
+          let url = URL.createObjectURL(file.files[0]);
+          img.src = url
+        }
+        file.click();
+      }
+    })()
+</script>

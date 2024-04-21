@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+  <html lang="kr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서울숲요양원</title>
+    <meta name="title" content="서울숲요양원">
+    <meta property="og:title" content="서울숲요양원">
+    <link rel="icon" href="data:,">
+    
+  <link rel="stylesheet" type="text/css" href="css/contents.css">
+  <link rel="stylesheet" type="text/css" href="css/foot.css">
+  <link rel="stylesheet" type="text/css" href="css/head.css">
+  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class='wrap'>
+      <div class='container'>
+  <div id="header_menu">
+    <a id="admin_login" href="/login">관리자</a>
+    <div id="login_modal">
+      <div class="grid_box">
+        <div>관리자로그인</div>
+        <div id="title_id"></div><input type="text" id="l_id">
+        <div id="title_pass"></div><input type="password" id="l_pass">
+        <input id="admin_btn" type="submit" value="로그인">
+      </div>
+    </div>
+  </div>
+  <script>
+    let adminBtn = document.querySelector('#admin_login');
+    let header_menu = document.getElementById('header_menu');
+    let modal = document.getElementById('login_modal');
+    adminBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.body.appendChild(modal);
+      modal.style.display = 'block';
+    })
+    modal.addEventListener('click', (e) => {
+      if (e.target.id == 'login_modal') {
+        modal.style.display = 'none'
+        header_menu.appendChild(modal);
+      } else if (e.target.id == 'admin_btn') {
+        let id = document.getElementById('l_id').value;
+        let pass = document.getElementById('l_pass').value;
+        let tmp
+        fetch('/login', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, pass }),
+        }).then(response => {
+          tmp = response.headers;
+          return response.json()
+        }).then(response => {
+          console.log(response)
+          if (response.rs == 'ok') {
+            localStorage.setItem('token', tmp.get('Authorization').substring(7));
+            location.href = response.href;
+          } else {
+            alert("아이디 또는 비밀번호를 확인해주세요")
+          }
+        })
+      }
+    })
+  </script>
+  <div id="header_nav">
+    <div id="logo_box">
+      <a href="/">
+        <img src="image/main/logo.png" alt="서울숲요양원">
+      </a>
+    </div>
+    <div id="main_nav">
+      <ul class="nav_list">
+        <li class="nav_item menu1">
+          <a href="/intro">요양원소개</a>
+<ul>
+<li>
+              <a href="/intro">인사말</a>
+            </li>
+
+<li>
+              <a href="/jojigdo">조직도</a>
+            </li>
+
+<li>
+              <a href="/status">시설현황</a>
+            </li>
+</ul>
+</li>
+<li class="nav_item menu2">
+          <a href="/info">입소비용</a>
+<ul>
+<li>
+              <a href="/info">입소비용</a>
+            </li>
+
+<li>
+              <a href="/info2">입소안내</a>
+            </li>
+</ul>
+</li>
+<li class="nav_item menu3">
+          <a href="/service">서비스안내</a>
+<ul>
+<li>
+              <a href="/service">서울숲케어서비스</a>
+            </li>
+
+<li>
+              <a href="/volunteer">자원봉사</a>
+            </li>
+</ul>
+</li>
+<li class="nav_item menu4">
+          <a href="/gall">갤러리</a>
+<ul>
+<li>
+              <a href="/gall">시설갤러리</a>
+            </li>
+
+<li>
+              <a href="/photo_gall">숲갤러리</a>
+            </li>
+
+<li>
+              <a href="/act_gall">행사/활동갤러리</a>
+            </li>
+</ul>
+</li>
+<li class="nav_item menu5">
+          <a href="/notice">커뮤니티</a>
+<ul>
+<li>
+              <a href="/notice">공지사항</a>
+            </li>
+
+<li>
+              <a href="/custom">고객센터</a>
+            </li>
+</ul>
+</li>
+<li class="nav_item menu6">
+          <a href="/dataroom">자료실</a></li>
+<li class="nav_item menu7">
+          <a href="/map">오시는길</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class='container'>
+  <div class="content_head">
+    <div>
+      서울숲요양원이<br />
+      어르신들을<br />
+      편안히모시겠습니다<br />
+    </div>
+  </div>
+</div>
+<div class='container'>
+  <div class="content_wrap">
+    <div class="content_left">
+      <div class="left_head">
+        
+서비스안내
+
+      </div>
+      <div class="left_list">
+        <ul>
+          
+<li class='active'>
+      <a href="/service">서울숲케어서비스</a>
+    </li>
+    <li>
+      <a href="/volunteer">자원봉사</a>
+    </li>
+    
+
+        </ul>
+      </div>
+    </div>
+    <div class="content_main">
+      <h1>
+        
+서울숲케어서비스
+
+      </h1>
+      <div class="sub_textbox">
+        
+<div class="content">
+  <div class="hr_1"></div>
+  <h1>
+    특화프로그램(자연친화적삶)
+  </h1>
+  <div>
+    - 텃밭 운영을 통한 자연과 함께하는 삶. 가족과 함께 가꿀 수 있는 공간(안산 화정동)<br />
+    - 가족,보호자와 함께 휴가를 지낼 수 있는 환경 조성(전북진안 서울숲 연수원 활용)연 10박 무료이용 서비스 제공
+  </div>
+  <div class="hr_1"></div>
+  <h1>
+    케어서비스
+  </h1>
+  <div>
+    서울숲 입소자의 건강상태 및 기능에 맞는 보살핌을 통해 잔존능력을 유지<br />
+    - 신체활동지원 : 식사, 배설, 목욕, 이ㆍ미용, 위생관리<br />
+    - 일상생활지원 : 의복 및 침구관리, 환경관리, 물품관리<br />
+    - 정서지원 : 말벗, 산책
+  </div>
+  <div class="hr_1"></div>
+  <h1>
+    생활지원서비스
+  </h1>
+  <div>
+    입소자와 보호자의 욕구를 반영한 서비스가 진행될 수 있도록 상담 및 정보제공<br />
+    - 종합상담 : 입소상담, 입소자 개인 및 집단 상담, 보호자상담<br />
+    - 가족지원사업 : 가정통신문 발송, 보호자 욕구 및 만족도 조사, 가족간담회, 행사참여
+  </div>
+  <div class="hr_1"></div>
+  <h1>
+    여가지원서비스
+  </h1>
+  <div>
+    - 교육재활사업 : 원예치료, 미술치료, 음악치료, 기타활동 등<br />
+    - 사회심리재활사업 : 생신잔치, 절기행사, 장터, 기념행사, 특별공연 등<br />
+    - 유닛프로그램 : 음식만들기, 민요교실, 외식, 나들이, 영화감상 건강체조등
+  </div>
+  <div class="hr_1"></div>
+  <h1>
+    정서지원서비스
+  </h1>
+  <div>
+    - 문화공연,종교활동,영화관람,명상,세대교류활동
+  </div>
+  <div class="hr_1"></div>
+  <h1>
+    사례관리
+  </h1>
+  <div>
+    입소자의 심리적, 정서적, 기능적 평가를 기반으로 전문적인 팀간의 통합적 개입을 통하여 개별 맞춤서비스를 제공<br />
+    - 시설서비스계획 : 입소 전 상담을 통하여 입소생활의 적응을 도움<br />
+    - 케어플랜 : 입소한 어르신은 6개월 마다 진행 신입소자 3개월간 초기개입 이후 기입소자와 동일하게 진행<br />
+    - 집중사례관리 : 집중관리가 필요한 대상자를 선정하여 매월 개입함
+  </div>
+  <div class="hr_1"></div>
+  <h1>
+    기능회복서비스
+  </h1>
+  <div>
+    - 물리치료 (주2회 이상 제공)<br />
+    - 온열치료,전기치료,운동치료,기능회복훈련<br />
+    - 작업치료 : 인지 및 시지각 기능훈련,일상생활기능훈련,연하장애훈련,신체기능회복치료
+  </div>
+  <div class="hr_1"></div>
+  <h1>
+    의료지원서비스
+  </h1>
+  <div>
+    - 전문화된 간호사의 간호관리<br />
+    - 촉탁의 진료(주1회 제공)<br />
+    - 활력증후측정, 체중관리, 혈당관리, 투약 및 드레싱<br />
+    - 건강상담, 호스피스 간호 - Tube관리(비위관,위루관,유치도뇨관,소독 및 관리)<br />
+    - 욕창관리 및 상처관리/투약관리/낙상예방관리/건강상담과 교육관리<br />
+    - 응급상황간호 - 정기건강관리<br />
+    - 연 1회 이상 건강검진
+  </div>
+  <div class="hr_1"></div>
+  <h1>
+    지역사회연계서비스
+  </h1>
+  <div>
+    - 자원봉사자 육성<br />
+    - 지역사회 인적, 물적자원 발굴<br />
+    - 지역행사 참여<br />
+    - 유관기관 연계사업 추진
+  </div>
+</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div id="footer_link">
+  <div class="list_box">
+    <ul class="nav_list">
+      <li><a href="/terms_of_use.html">이용약관</a></li>
+      <li id="privacy"><a href="/privacy.html">개인정보보호</a></li>
+  <li>
+          <a href="https://www.seoul.go.kr/">
+          <img src="image/Shortcuts/서울시.png" alt="서울시"> 
+          서울시
+          </a>
+          </li>
+<li>
+          <a href="https://www.mohw.go.kr/">
+          <img src="image/Shortcuts/보건복지부.png" alt="보건복지부"> 
+          보건복지부
+          </a>
+          </li>
+    </ul>
+  </div>
+</div>
+<div class="container">
+        <div id="address">
+          <span>
+      <strong>대표자</strong>
+      테스터</span> |
+<span>
+      <strong>주소</strong>
+      서울시 00동 00길 10</span> |
+<span>
+      <strong>대표전화</strong>
+      02-123-1234</span> |
+<span>
+      <strong>팩스</strong>
+      02-123-1235</span>
+        </div>
+        <div id="copyright">
+          <div>Copyrightⓒ 2016 서울숲요양원. All rights reserved. Powered by seoulsoop.kr</div>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>

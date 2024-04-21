@@ -1,0 +1,182 @@
+<div class="content">
+  <div class="act_gall_box">
+
+  </div>
+  <div class="act_gall_page_navbox">
+
+  </div>
+  <script>
+    (function () {
+      // let box = document.querySelector('.sub_textbox');
+      // box.classList.remove('sub_textbox');
+      // box.classList.add('sub_gallbox');
+      let target = 'notice';
+      let link = document.createElement('link');
+      document.querySelector('.content').appendChild(link);
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/admin_gall1.css';
+
+      let qs = new URLSearchParams(location.search);
+      let page = qs.get('pages') || 1;
+
+      makePage(page, target);
+
+      async function makePage(p, t) {
+        console.log(t, p, '--')
+        let response = await fetch('/api/get_' + t + '/page/' + p);
+        let rs = await response.json();
+        console.log(rs)
+        makePageNav(p, rs.maxPage)
+        pushData(rs.data)
+      };
+
+      function pushData(data) {
+        let gridBox = document.querySelector('.act_gall_box');
+        gridBox.replaceChildren()
+
+        let btn_div = document.createElement('div');
+        gridBox.appendChild(btn_div);
+
+        btn_div.classList.add('btn_div');
+        btn_div.innerHTML = `
+        <div><div id="sub_tt"></div><input type="button" value="글쓰기" id="write_btn"></div>
+        `;
+        btn_div.querySelector('#sub_tt').innerText = (function(){
+          switch(target) {
+            case 'act_gall':
+              return '행사/활동갤러리';
+            case 'notice':
+              return '공지사항';
+            case 'custom':
+              return '입소문의';
+            case 'volunteer':
+              return '자원봉사문의';
+          }
+        })()
+
+        document.getElementById('write_btn').onclick = () => {
+          location.href = '/admin?page=write&target=' + target
+        }
+
+
+        let title_div = document.createElement('div');
+        gridBox.appendChild(title_div);
+
+        title_div.classList.add('box_class');
+        title_div.innerHTML = `
+        <div>
+            글번호
+          </div>
+          <div>
+            이미지
+          </div>
+          <div>
+            제목
+          </div>
+          <div>
+            날자
+          </div>
+          <div>
+            편집
+          </div>
+          <div>
+            삭제
+          </div> 
+        `;
+
+        data.forEach(p => {
+          let div = document.createElement('div');
+          gridBox.appendChild(div);
+
+          div.innerHTML = `
+          <div class="d_d_num">
+            ${p.id / 1 + 1}
+          </div>
+          <div class="d_img">
+            ${p.body.find(q => q.type == 'img') ? `<img src="image/upload/${p.body.find(q => q.type == 'img').data}" alt="" width='100%' height='100px'>` : `<div style='height:100px;align-items:center;display:grid'>No Image</div>`}
+          </div>
+          <div class="d_title">
+            ${p.title}
+          </div>
+          <div class="d_date">
+            ${p.date}
+          </div>
+          <div class="d_fix">
+            <input type="button" value="편집" class="fix">
+          </div>
+          <div class="d_del">
+            <input type="button" value="삭제" class="del">
+          </div>
+          `;
+          div.querySelector('.fix').onclick = () => {
+            location.href = '/admin?page=write&target=' + target + '&id=' + p.id
+          }
+          div.querySelector('.del').onclick = () => {
+            if (confirm("정말 삭제하시겠습니까??") == true) {
+              fetch(`/api/del/board/${target}/${p.id}`).then(res => {
+                if (res.status == 200) {
+                  alert('삭제완료');
+                  location.reload(true);
+                }
+              })
+            } else {
+              return false;
+            }
+          }
+
+
+
+        })
+      }
+
+
+      function makePageNav(page, maxPage) {
+        let pageNav = document.querySelector('.act_gall_page_navbox');
+        pageNav.replaceChildren()
+
+        let pageStart = Math.floor((page - 1) / 10) * 10 + 1;
+        let pageEnd = maxPage <= (pageStart + 9) ? maxPage : (pageStart + 9);
+        let navBox = document.createElement('div');
+        pageNav.appendChild(navBox);
+        for (let i = pageStart; i <= pageEnd; i++) {
+          let nav = document.createElement('a');
+          navBox.appendChild(nav);
+          nav.classList.add('page_nav')
+          nav.innerText = i;
+          if (i == page) {
+            nav.classList.add('active');
+          }
+          nav.href = '/admin?page=' + target + '&pages=' + i;
+          nav.onclick = (e) => {
+            e.preventDefault();
+            makePage(i, target);
+          }
+        }
+        if (pageStart > 1) {
+          let left = document.createElement('a');
+          navBox.appendChild(left);
+          left.classList.add('page_nav_left')
+          left.innerText = "<<";
+          left.href = '/admin?page=' + target + '&pages=' + (pageStart - 1);
+          left.onclick = (e) => {
+            e.preventDefault();
+            makePage((pageStart - 1), target);
+          }
+        }
+        if (pageEnd < maxPage) {
+          let right = document.createElement('a');
+          navBox.appendChild(right);
+          right.classList.add('page_nav_right')
+          right.innerText = ">>";
+          right.href = '/admin?page=' + target + '&pages=' + (pageEnd + 1);
+          right.onclick = (e) => {
+            e.preventDefault();
+            makePage((pageEnd + 1), target);
+          }
+        }
+      }
+    })()
+
+  </script>
+</div>

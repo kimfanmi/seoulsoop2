@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+  <html lang="kr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서울숲요양원</title>
+    <meta name="title" content="서울숲요양원">
+    <meta property="og:title" content="서울숲요양원">
+    <link rel="icon" href="data:,">
+    
+  <link rel="stylesheet" type="text/css" href="css/contents.css">
+  <link rel="stylesheet" type="text/css" href="css/foot.css">
+  <link rel="stylesheet" type="text/css" href="css/head.css">
+  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class='wrap'>
+      <div class='container'>
+  <div id="header_menu">
+    <a id="admin_login" href="/login">관리자</a>
+    <div id="login_modal">
+      <div class="grid_box">
+        <div>관리자로그인</div>
+        <div id="title_id"></div><input type="text" id="l_id">
+        <div id="title_pass"></div><input type="password" id="l_pass">
+        <input id="admin_btn" type="submit" value="로그인">
+      </div>
+    </div>
+  </div>
+  <script>
+    let adminBtn = document.querySelector('#admin_login');
+    let header_menu = document.getElementById('header_menu');
+    let modal = document.getElementById('login_modal');
+    adminBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.body.appendChild(modal);
+      modal.style.display = 'block';
+    })
+    modal.addEventListener('click', (e) => {
+      if (e.target.id == 'login_modal') {
+        modal.style.display = 'none'
+        header_menu.appendChild(modal);
+      } else if (e.target.id == 'admin_btn') {
+        let id = document.getElementById('l_id').value;
+        let pass = document.getElementById('l_pass').value;
+        let tmp
+        fetch('/login', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, pass }),
+        }).then(response => {
+          tmp = response.headers;
+          return response.json()
+        }).then(response => {
+          console.log(response)
+          if (response.rs == 'ok') {
+            localStorage.setItem('token', tmp.get('Authorization').substring(7));
+            location.href = response.href;
+          } else {
+            alert("아이디 또는 비밀번호를 확인해주세요")
+          }
+        })
+      }
+    })
+  </script>
+  <div id="header_nav">
+    <div id="logo_box">
+      <a href="/">
+        <img src="image/main/logo.png" alt="서울숲요양원">
+      </a>
+    </div>
+    <div id="main_nav">
+      <ul class="nav_list">
+        <li class="nav_item menu1">
+          <a href="/intro">요양원소개</a>
+<ul>
+<li>
+              <a href="/intro">인사말</a>
+            </li>
+
+<li>
+              <a href="/jojigdo">조직도</a>
+            </li>
+
+<li>
+              <a href="/status">시설현황</a>
+            </li>
+</ul>
+</li>
+<li class="nav_item menu2">
+          <a href="/info">입소비용</a>
+<ul>
+<li>
+              <a href="/info">입소비용</a>
+            </li>
+
+<li>
+              <a href="/info2">입소안내</a>
+            </li>
+</ul>
+</li>
+<li class="nav_item menu3">
+          <a href="/service">서비스안내</a>
+<ul>
+<li>
+              <a href="/service">서울숲케어서비스</a>
+            </li>
+
+<li>
+              <a href="/volunteer">자원봉사</a>
+            </li>
+</ul>
+</li>
+<li class="nav_item menu4">
+          <a href="/gall">갤러리</a>
+<ul>
+<li>
+              <a href="/gall">시설갤러리</a>
+            </li>
+
+<li>
+              <a href="/photo_gall">숲갤러리</a>
+            </li>
+
+<li>
+              <a href="/act_gall">행사/활동갤러리</a>
+            </li>
+</ul>
+</li>
+<li class="nav_item menu5">
+          <a href="/notice">커뮤니티</a>
+<ul>
+<li>
+              <a href="/notice">공지사항</a>
+            </li>
+
+<li>
+              <a href="/custom">고객센터</a>
+            </li>
+</ul>
+</li>
+<li class="nav_item menu6">
+          <a href="/dataroom">자료실</a></li>
+<li class="nav_item menu7">
+          <a href="/map">오시는길</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class='container'>
+  <div class="content_head">
+    <div>
+      서울숲요양원이<br />
+      어르신들을<br />
+      편안히모시겠습니다<br />
+    </div>
+  </div>
+</div>
+<div class='container'>
+  <div class="content_wrap">
+    <div class="content_left">
+      <div class="left_head">
+        
+요양원소개
+
+      </div>
+      <div class="left_list">
+        <ul>
+          
+<li class='active'>
+      <a href="/intro">인사말</a>
+    </li>
+    <li>
+      <a href="/jojigdo">조직도</a>
+    </li>
+    <li>
+      <a href="/status">시설현황</a>
+    </li>
+    
+
+        </ul>
+      </div>
+    </div>
+    <div class="content_main">
+      <h1>
+        
+인사말
+
+      </h1>
+      <div class="sub_textbox">
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+<div class="hr_1"></div>
+<div class="content">
+  <h1><span style="font-family: &quot;Noto Sans KR&quot;;">안녕하십니까?</span><br style="font-family: &quot;Noto Sans KR&quot;;"><span style="font-family: &quot;Noto Sans KR&quot;;">000요양원을 찾아주신 여러분께 감사드립니다.</span><br></h1>
+  <span style="color: rgb(91, 91, 91); font-family: &quot;Noto Sans KR&quot;; font-size: 14px;">한국의 현재 시점은 급격한 노령화로 어르신들의 고독사가 빈번히 발생하고 있으며, 복지의 사각지대 발생 및 맞벌이 가족 증가 등으로 더 이상 부모님 모시는 것을 자녀에게만 책임지울 수 없고&nbsp;국가적 차원의 '사회 복지 시스템 구축'이 절실하게 필요한 상황입니다.</span><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><span style="color: rgb(91, 91, 91); font-family: &quot;Noto Sans KR&quot;; font-size: 14px;">저희 서울숲 요양원은 사회적 효를 작게 나마 실천하면서 국내 장기요양시설의 모범이 되고자 합니다.&nbsp;특히나 서울시 난향동에 충분한 녹지공간이 있는 입지조건을 갖추고 있으며 서울 도심에 있어 접근성를 최대한 고려하여 보호자분들께서 언제든 찾아 뵐 수 있도록 하였습니다.</span><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><span style="color: rgb(91, 91, 91); font-family: &quot;Noto Sans KR&quot;; font-size: 14px;">또한, 가정 같은 독립된 생활 뿐 아니라 다른 어르신과 친밀한 교류를&nbsp;자연스럽게 할 수 있는 공간 설계를 하였습니다.&nbsp;</span><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><span style="color: rgb(91, 91, 91); font-family: &quot;Noto Sans KR&quot;; font-size: 14px;">뿐만 아니라 경기 안산 텃밭 운영 및 전북 진안의 연수원 운영을 통해 어르신들이 가족과 함께 할 수 있는 많은 기회를 드리고자 합니다. 저희는 내 부모님을 섬긴다는 마음으로 어르신들을 정성껏 모시겠습니다.</span><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><span style="color: rgb(91, 91, 91); font-family: &quot;Noto Sans KR&quot;; font-size: 14px;">&nbsp;어르신들께서 자존감을 갖고 행복한 여생을 보낼 수 있는&nbsp;보호자가 믿고 함께 할 수 있는 요양시설이 될 것임을 약속드립니다.</span><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><br style="font-family: &quot;Noto Sans KR&quot;; color: rgb(91, 91, 91); font-size: 14px;"><div><span style="font-family: &quot;Noto Sans KR&quot;;">&nbsp;대표</span>&nbsp;○○○<br><br><br><br></div>
+</div>
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      </div>
+    </div>
+  </div>
+</div>
+<div id="footer_link">
+  <div class="list_box">
+    <ul class="nav_list">
+      <li><a href="/terms_of_use.html">이용약관</a></li>
+      <li id="privacy"><a href="/privacy.html">개인정보보호</a></li>
+  <li>
+          <a href="https://www.seoul.go.kr/">
+          <img src="image/Shortcuts/서울시.png" alt="서울시"> 
+          서울시
+          </a>
+          </li>
+<li>
+          <a href="https://www.mohw.go.kr/">
+          <img src="image/Shortcuts/보건복지부.png" alt="보건복지부"> 
+          보건복지부
+          </a>
+          </li>
+    </ul>
+  </div>
+</div>
+<div class="container">
+        <div id="address">
+          <span>
+      <strong>대표자</strong>
+      테스터</span> |
+<span>
+      <strong>주소</strong>
+      서울시 00동 00길 10</span> |
+<span>
+      <strong>대표전화</strong>
+      02-123-1234</span> |
+<span>
+      <strong>팩스</strong>
+      02-123-1235</span>
+        </div>
+        <div id="copyright">
+          <div>Copyrightⓒ 2016 서울숲요양원. All rights reserved. Powered by seoulsoop.kr</div>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>

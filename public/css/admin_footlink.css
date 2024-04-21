@@ -1,0 +1,50 @@
+
+#c_box {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  gap: 20px;
+}
+
+#c_box > div {
+  display: grid;
+  grid-template-columns: 6fr 2fr 2fr 1fr;
+  align-items: center;
+  align-self: center;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+  padding: 5px;
+}
+
+#c_box > div > * {
+  display: block;
+}
+
+#c_box > div > div:first-child > input {
+  width: 70%;
+  margin: 3px;
+}
+
+.file_input {
+  display: none !important;
+}
+
+#c_box {
+  width: 100% !important;
+}
+
+#c_box > div > input:first-child {
+  width: 80%;
+  height: 23px;
+}
+.file_btn {
+  width: 60%;
+}
+#save,
+#add_img {
+  margin: 30px;
+  padding: 5px 10px;
+}
+#add_img {
+  margin-left: 250px;
+}

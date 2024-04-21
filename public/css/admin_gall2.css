@@ -1,0 +1,91 @@
+
+.act_gall_page_navbox {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+}
+.act_gall_page_navbox > div {
+  width: fit-content;
+  margin: 0 auto;
+  position: relative;
+}
+.act_gall_page_navbox a.page_nav {
+  border: 1px solid #808080;
+  background-color: #fff;
+  color: #808080;
+  font-size: 12px;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  width: 24px;
+  padding: 4px 0;
+}
+.act_gall_page_navbox a.active {
+  color: #fff;
+  background-color: #808080;
+}
+a.page_nav ~ a.page_nav {
+  margin-left: 4px;
+}
+
+.page_nav_left,
+.page_nav_right {
+  position: absolute;
+  text-decoration: none;
+  color: #808080;
+}
+.page_nav_left {
+  right: 102%;
+}
+.page_nav_right {
+  left: 102%;
+}
+
+.box_class,
+.box_class ~ div {
+  display: grid;
+  grid-template-columns: 1fr 4fr 2fr 1fr 1fr;
+}
+.box_title ~ div > div {
+  text-align: center;
+}
+.d_title {
+  text-align: left !important;
+}
+
+.box_class {
+  margin: 0 !important;
+}
+
+.btn_div>div:first-child {
+  height: 40px;
+  position: relative;
+  display: grid;
+  align-items: center;
+  text-align: center;
+}
+#sub_tt {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+.box_class,
+.box_class ~ div > div {
+  text-align: center;
+}
+.d_title {
+  text-align: left !important;
+}
+.box_class {
+  margin: 0 !important;
+  height: 50px;
+  border-bottom: 3px solid #aaa;
+}
+.box_class ~ div {
+  margin-top: 5px;
+  height: 33px;
+  border-bottom: 1px solid #eee;
+}
+.d_title {
+  cursor: pointer;
+}

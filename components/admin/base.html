@@ -1,0 +1,62 @@
+<form id="v_form" action="" method="post">
+  <div>기본정보</div><div> </div>
+  <label>
+    대표자명
+  </label>
+  <input type="text" name="v_name" id="v_name" size="12" maxlength="90">
+  <label>
+    주소
+  </label>
+  <input type="text" name="v_addr" id="v_addr" size="15" maxlength="90">
+  <label>
+    연락처
+  </label>
+  <input type="text" name="v_phone" id="v_phone" size="40" maxlength="70">
+  <label>
+    팩스
+  </label>
+  <input type="text" name="v_fax" id="v_fax" size="40" maxlength="70">
+  <div> </div>
+  <input id="v_submit" type="button" value="저장">
+</form>
+<script>
+  (function () {
+    let v_name = document.getElementById('v_name');
+    let v_addr = document.getElementById('v_addr');
+    let v_phone = document.getElementById('v_phone');
+    let v_fax = document.getElementById('v_fax');
+    let v_submit = document.getElementById('v_submit');
+
+    makePage();
+
+    v_submit.onclick = () => {
+      let rs = {};
+      rs['대표자'] = v_name.value;
+      rs['주소'] = v_addr.value;
+      rs['대표전화'] = v_phone.value;
+      rs['팩스'] = v_fax.value;
+      let option = {
+        method: "POST",
+        headers: { "Authorization": 'Bearer ' + token, "Content-Type": "application/json" },
+      }
+      option.body = JSON.stringify(rs);
+      fetch('/api/save/footer', option).then(res => {
+        if (res.status == 200) {
+          alert('저장완료');
+        }
+      })
+    }
+
+    async function makePage() {
+      let response = await fetch('/get_foot_json');
+      let rs = await response.json();
+      console.log(rs)
+
+      v_name.value = rs['대표자'];
+      v_addr.value = rs['주소'];
+      v_phone.value = rs['대표전화'];
+      v_fax.value = rs['팩스'];
+
+    };
+  })()
+</script>

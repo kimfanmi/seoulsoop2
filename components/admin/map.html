@@ -1,0 +1,105 @@
+
+<div>
+  <div id="c_box">
+  
+  </div>
+  <div class="btn_box">
+    <button id="c_img">이미지수정</button>
+    <button id="save">저장하기</button>
+  </div>
+</div>
+<script>
+  (function () {
+    let target = 'map';
+    let c_img = document.getElementById('c_img');
+    let save = document.getElementById('save');
+
+    // save.style.display = 'none';
+    c_img.style.display = 'none';
+
+
+
+    save.addEventListener('click', (e) => {
+      let option = {
+        method: "POST",
+        headers: { "Authorization": 'Bearer ' + token, "Content-Type": "application/json" },
+      }
+      let div = document.querySelector('#c_box').cloneNode(true);
+      div.querySelector('.content').removeAttribute('contentEditable')
+      let body = {};
+      body.data = div.querySelector('.sub_textbox').innerHTML;
+      option.body = JSON.stringify(body);
+      console.log(option)
+      fetch('/api/save/text/' + target, option).then(res => {
+        if (res.status == 200) {
+          alert('저장완료');
+        }
+      })
+    })
+
+    c_img.addEventListener('click', (e) => {
+      let formData = new FormData();
+      let option = {
+        method: "POST",
+        headers: { "Authorization": 'Bearer ' + token, "charset": "UTF-8" },
+      }
+      let input = document.createElement('input');
+      input.type = "file";
+      input.name = "chooseFile";
+      input.accept = "image/*";
+      input.onchange = () => {
+        console.log(input.files[0])
+        formData.append('image', input.files[0])
+        formData.append('src', document.querySelector('#c_box img').src)
+        console.log(formData)
+        option.body = formData;
+        console.log(option)
+        fetch('/api/save/img', option).then(res => {
+          if (res.status == 200) {
+            alert('저장완료');
+            location.reload(true);
+          }
+        })
+
+      };
+      input.click();
+    })
+
+  })()
+</script>
+<script>
+
+    (function () {
+      let target = 'map';
+      let contentEditable = true;
+
+      let option = {
+        method: "GET",
+        headers: { "Authorization": 'Bearer ' + token },
+      }
+
+      let link = document.createElement('link');
+      document.querySelector('.content').appendChild(link);
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/contents.css';
+
+      fetch('/' + target, option).then(res => {
+        if (res.status == 200) {
+          return res.text();
+        } else {
+          alert('다시 로그인해주세요');
+          location.href = '/';
+        }
+      }).then(res => {
+        let tmp = document.createElement('div');
+        tmp.innerHTML = res;
+        let div = document.getElementById('c_box');
+        div.innerHTML = tmp.querySelector('.sub_textbox').outerHTML;
+        if (contentEditable) {
+          div.querySelector('.content').contentEditable = "true";
+        }
+      })
+
+    })()
+</script>

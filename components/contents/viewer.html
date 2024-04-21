@@ -1,0 +1,101 @@
+<div class="viewer_info1">
+  <div class="viewer_title">제목<span></span></div>
+  <div class="viewer_writer">작성자<span></span></div>
+  <div class="viewer_date">작성일<span></span></div>
+</div>
+<div class="viewer_info2">
+  <div class="viewer_clicked">조회수<span></span></div>
+</div>
+<div class="viewer_content">
+
+</div>
+<div class="viewer_btnBox">
+  <button>목록</button>
+</div>
+<script>
+  let box = document.querySelector('.sub_textbox');
+  box.classList.remove('sub_textbox');
+  box.classList.add('sub_viewerbox');
+
+  let link = document.createElement('link');
+  document.head.appendChild(link);
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = 'css/viewer.css';
+
+  let params = new URLSearchParams(location.search)
+  let id = params.get('id') / 1;
+  let page = params.get('page');
+  let board = params.get('board');
+  if (!(id >= 0)) {
+    if (board && page)
+      location.href = '/' + board + '?page=' + page;
+    else
+      location.href = '/';
+  }
+  (async function () {
+    let response = await fetch('/api/get/' + board + '/item/' + id);
+    let rs = await response.json();
+    // console.log(rs)
+    viewer({ ...rs, writer: '관리자' })
+  })();
+
+  function viewer(data) {
+    let { title, writer, clicked, date, body } = data;
+
+    document.querySelector('.viewer_info1 > .viewer_title > span').textContent = title;
+    document.querySelector('.viewer_info1 > .viewer_writer > span').textContent = writer;
+    document.querySelector('.viewer_info1 > .viewer_date > span').textContent = date;
+    document.querySelector('.viewer_info2 > .viewer_clicked > span').textContent = clicked;
+
+    let content = document.querySelector('.viewer_content');
+
+    let files = [];
+    body.forEach(p => {
+      let br = document.createElement('br');
+      if (p.type == 'img') {
+        let img = document.createElement('img');
+        img.src = 'image/upload/' + p.data;
+        img.style.width = '100%'
+        content.appendChild(img);
+        content.appendChild(br);
+      } else if (p.type == 'text') {
+        let span = document.createElement('span');
+        span.textContent = p.data;
+        content.appendChild(span);
+        content.appendChild(br);
+      } else if (p.type == 'br') {
+        content.appendChild(br);
+      } else if (p.type == 'file') {
+        let file_a = document.createElement('div');
+        
+        files.push(file_a);
+        let a = document.createElement('a');
+        let download_icon = document.createElement('span');
+        let text = document.createElement('span');
+        download_icon.classList.add('download_icon');
+        text.innerText = p.data;
+        a.href = 'download/' + p.data;
+        a.appendChild(download_icon);
+        a.appendChild(text);
+        a.title = p.data;
+        file_a.prepend(a);
+        file_a.style.overflow = 'hidden';
+      }
+    })
+
+    files.reverse().forEach(p=>{
+      document.querySelector('.viewer_info2').prepend(p);
+    })
+
+    document.querySelector('.viewer_btnBox > button').addEventListener('click', () => {
+      if (board && page)
+        location.href = '/' + board + '?page=' + page;
+    })
+
+
+
+  }
+
+
+</script>

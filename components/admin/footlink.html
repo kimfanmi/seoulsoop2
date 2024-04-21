@@ -1,0 +1,176 @@
+<div>
+  <div id="c_box">
+    <div id="tmp">
+      <div>
+        <span> 이 름 : </span><input class="text_input" type="text" id="ti1"><br/>
+        <span> 링 크 : </span><input class="text_input2" type="text" id="ti2">
+      </div>
+      <input class="file_btn" type="button" value="이미지수정">
+      <input class="file_input" type="file" accept="image/*">
+      <img src="" alt="" width="50px" height="50px">
+      <input class="x_btn" type="button" value="삭제">
+    </div>
+  </div>
+  <input type="button" value="이미지추가하기" id="add_img">
+  <input type="button" value="저장하기" id="save">
+</div>
+<script>
+  (function () {
+    let target = 'footlink';
+    let id = document.getElementById('save');
+    let c_box = document.getElementById('c_box');
+    id.onclick = () => {
+      let data = { data: {}, images: [] };
+      for (let i = 0; i < c_box.children.length; i++) {
+        let titlebox = c_box.children[i].querySelector('#ti1');
+        let title = titlebox.value;
+        if (!title) {
+          titlebox.focus();
+          alert('이름을 입력해주세요!')
+          return false;
+        }
+        if (title.includes('$')) {
+          titlebox.focus();
+          alert('이름에 $ 를 넣으면 안됩니다!')
+          return false;
+        }
+        let pa = '';
+        if (!data.data[title]) {
+          data.data[title] = {};
+        }
+
+        let file = c_box.children[i].querySelector('input[type=file]').files[0];
+        if (file) {
+          const newFile = new File([file], title + '.' + file.name.split('.')[1], { type: file.type });
+          data.data[title].image = 'image/Shortcuts/' + newFile.name;
+          data.images.push(newFile);
+        } else {
+          let src = c_box.children[i].querySelector('img').src;
+          data.data[title].image = 'image/' + decodeURIComponent(src.split('image/')[1]);
+        }
+        data.data[title].href = c_box.children[i].querySelector('#ti2').value;
+      }
+
+      let option = {
+        method: "POST",
+        headers: { "Authorization": 'Bearer ' + token, "charset": "UTF-8" },
+      }
+      let formData = new FormData();
+      data.images.forEach(p => {
+        formData.append('images', p)
+      })
+      formData.append('json', JSON.stringify(data.data));
+      // data.title.join(',')
+      option.body = formData;
+      fetch('/api/save/footlink', option).then(res => {
+        if (res.status == 200) {
+          alert('저장완료');
+        }
+      })
+    }
+  })()
+</script>
+<script>
+    (async function () {
+      let target = 'footlink';
+      let contentEditable = false;
+      let c_box = document.getElementById('c_box');
+
+      let option = {
+        method: "GET",
+        headers: { "Authorization": 'Bearer ' + token },
+      }
+
+      let link = document.createElement('link');
+      document.querySelector('.content').appendChild(link);
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/admin_footlink.css';
+
+      let data = [];
+      await fetch('/json/' + target, option).then(res => {
+        if (res.status == 200) {
+          return res.json();
+        } else {
+          alert('다시 로그인해주세요');
+          location.href = '/';
+        }
+      }).then(res => {
+        data = res;
+      })
+      console.log(data)
+      const tmp = document.getElementById('tmp');
+      Object.keys(data).forEach(p => {
+        let div = tmp.cloneNode(true);
+        div.removeAttribute('id');
+        let text = div.querySelector('.text_input');
+        text.value = p;
+        text.className = p;
+        text.onchange = () => {
+          text.className = text.value;
+        };
+        let text2 = div.querySelector('.text_input2');
+        text2.value = data[p].href;
+        text2.className = data[p].href;
+        text2.onchange = () => {
+          text2.className = text2.value;
+        };
+        c_box.appendChild(div);
+
+        let img = div.querySelector('img');
+        img.src = data[p].image;
+        let btn = div.querySelector('.file_btn');
+        let xbtn = div.querySelector('.x_btn');
+        let file = div.querySelector('.file_input');
+        btn.onclick = () => {
+          file.click();
+        }
+        xbtn.onclick = () => {
+          div.remove();
+        }
+
+        file.onchange = () => {
+          let url = URL.createObjectURL(file.files[0]);
+          img.src = url
+        }
+
+
+      })
+      tmp.remove();
+
+      document.getElementById('add_img').onclick = () => {
+        let div = tmp.cloneNode(true);
+        div.removeAttribute('id');
+        let text = div.querySelector('.text_input');
+        text.value = '';
+        text.className = '';
+        text.onchange = () => {
+          text.className = text.value;
+        };
+        let text2 = div.querySelector('.text_input2');
+        text2.value = '';
+        text2.className = '';
+        text2.onchange = () => {
+          text2.className = text2.value;
+        };
+        c_box.appendChild(div);
+
+        let img = div.querySelector('img');
+        let btn = div.querySelector('.file_btn');
+        let xbtn = div.querySelector('.x_btn');
+        let file = div.querySelector('.file_input');
+        btn.onclick = () => {
+          file.click();
+        }
+        xbtn.onclick = () => {
+          div.remove();
+        }
+
+        file.onchange = () => {
+          let url = URL.createObjectURL(file.files[0]);
+          img.src = url
+        }
+        file.click();
+      }
+    })()
+</script>
